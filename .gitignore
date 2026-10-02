@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+venv/
+env/
+ENV/
+
+# Database files created at runtime
+*.db-journal
+
+# Logs
+*.log
+
+# OS generated
+.DS_Store
+Thumbs.db
+desktop.ini
