@@ -12,6 +12,10 @@ ENV/
 *.db
 *.db-journal
 
+# Reports and docs
+*.docx
+*.pdf
+
 # Logs
 *.log
 

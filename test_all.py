@@ -1,18 +1,9 @@
 """
-Автоматический тест в строгом соответствии с чек-листом преподавателя:
-1. Auth-сервис:
-   - Регистрация (in-memory) через /auth/register
-   - Вход (Login) с получением JWT через /auth/login
-   - Защищенный эндпоинт /auth/me:
-     * Отклонение запроса БЕЗ токена (HTTP 401)
-     * Прием запроса С валидным JWT токеном (HTTP 200)
-2. Catalog-сервис:
-   - CRUD операции для сущности "Товар" через /catalog/products (POST, GET, PUT, DELETE)
-   - Идентификация инстанса (возврат instance_id в GET-ответах)
-3. API Gateway и Балансировка:
-   - Единая точка входа (все запросы идут строго через Gateway)
-   - Маршрутизация /auth/* и /catalog/*
-   - Доказательство балансировки: чередование instance_id (catalog-1, catalog-2)
+Скрипт автоматического тестирования API микросервисов:
+- Проверка доступности API Gateway
+- Auth-сервис: регистрация, вход с получением JWT, защищенный маршрут /me
+- Catalog-сервис: CRUD операции товаров (/products)
+- Проверка балансировки нагрузки Round-Robin
 """
 
 import sys
@@ -84,7 +75,7 @@ def main():
     print(f"GET /auth/me (без токена) -> HTTP {unauth_resp.status_code}")
     print(f"Ответ: {unauth_resp.json()}")
     assert unauth_resp.status_code == 401, "Ошибка: запрос без токена не был отклонен!"
-    print("-> Запрос успешно отклонен с кодом 401 (как требует чек-лист)!")
+    print("-> Запрос без токена успешно отклонен (HTTP 401)")
 
     # 1.4 Защищенный эндпоинт (/auth/me) С валидным JWT токеном
     print("\n[1.4 Защищенный метод (/auth/me) - Запрос С валидным токеном]")
@@ -112,9 +103,9 @@ def main():
     # 2.2 Create (POST /catalog/products)
     print("\n[2.2 Create (POST /catalog/products)]")
     new_product = {
-        "name": "Новый ноутбук студента",
-        "price": 99990.0,
-        "category": "Компьютеры",
+        "name": "Игровой монитор 144Hz",
+        "price": 24990.0,
+        "category": "Электроника",
         "stock": 5
     }
     create_resp = requests.post(f"{GATEWAY_URL}/catalog/products", json=new_product)
@@ -134,7 +125,7 @@ def main():
 
     # 2.4 Update (PUT /catalog/products/{id})
     print(f"\n[2.4 Update (PUT /catalog/products/{product_id})]")
-    update_data = {"price": 89990.0, "stock": 4}
+    update_data = {"price": 22990.0, "stock": 4}
     put_resp = requests.put(f"{GATEWAY_URL}/catalog/products/{product_id}", json=update_data)
     print(f"PUT /catalog/products/{product_id} -> HTTP {put_resp.status_code}")
     print(f"Обновленный товар: {put_resp.json().get('item')}")
@@ -150,7 +141,7 @@ def main():
     # ----------------------------------------------------
     # 3. Доказательство балансировки нагрузки
     # ----------------------------------------------------
-    print_section("3. ДОКАЗАТЕЛЬСТВО БАЛАНСИРОВКИ НАГРУЗКИ (ROUND-ROBIN)")
+    print_section("3. ПРОВЕРКА БАЛАНСИРОВКИ НАГРУЗКИ (ROUND-ROBIN)")
     print("Выполняем 6 последовательных GET запросов к /catalog/products через Gateway:")
     history = []
     for i in range(1, 7):
@@ -166,9 +157,9 @@ def main():
 
     unique_nodes = len(set(history))
     assert unique_nodes >= 2, "Ошибка: запросы не балансируются между инстансами!"
-    print("\n>>> [УСПЕХ] Запросы равномерно чередуются между инстансами (Round-Robin доказан)!")
+    print("\n>>> [УСПЕХ] Запросы равномерно чередуются между инстансами (Round-Robin работает)!")
 
-    print_section("ИТОГ: ВСЕ ТРЕБОВАНИЯ ИЗ ЧЕК-ЛИСТА ПРЕПОДАВАТЕЛЯ ВЫПОЛНЕНЫ НА 100%!")
+    print_section("ТЕСТИРОВАНИЕ УСПЕШНО ЗАВЕРШЕНО")
 
 
 if __name__ == "__main__":

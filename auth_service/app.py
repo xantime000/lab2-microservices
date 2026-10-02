@@ -1,11 +1,9 @@
 """
-Auth-сервис (FastAPI)
-Соответствие чек-листу и Шагу 1:
-1. Регистрация: POST /register (принимает username, password, сохраняет в in-memory словаре)
-2. Вход (Login): POST /login (проверяет учетные данные, возвращает JWT-токен)
-3. Защищенный эндпоинт: GET /me (требует заголовок Authorization: Bearer <token>)
-4. Хэширование через passlib, токены через PyJWT
-5. Service Discovery (Consul): авто-регистрация при старте и дерегистрация при остановке
+Микросервис аутентификации (FastAPI)
+- Регистрация пользователей (/register)
+- Вход и выпуск JWT токенов (/login)
+- Защищенный эндпоинт (/me)
+- Интеграция с Consul Service Discovery
 """
 
 import os

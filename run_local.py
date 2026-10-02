@@ -1,10 +1,10 @@
 """
-Скрипт запуска всей лабораторной работы локально на Windows БЕЗ Docker.
+Локальный запуск микросервисов и API Gateway.
 Запускает:
 1. Auth-сервис на порту 5001
-2. Catalog-сервис (Инстанс 1) на порту 5002
-3. Catalog-сервис (Инстанс 2) на порту 5003
-4. Локальный API Gateway на порту 8080
+2. Catalog-сервис (catalog-1) на порту 5002
+3. Catalog-сервис (catalog-2) на порту 5003
+4. API Gateway на порту 8080
 """
 
 import os
@@ -42,8 +42,8 @@ def start_service(name, script_path, env_vars=None):
 
 def main():
     print("=" * 65)
-    print("  ЗАПУСК ЛАБОРАТОРНОЙ РАБОТЫ №2 (МИКРОСЕРВИСЫ И ШЛЮЗ)")
-    print("  Режим: Локальный запуск на Windows (без Docker)")
+    print("  ЗАПУСК МИКРОСЕРВИСОВ И API GATEWAY")
+    print("  Режим: Локальный запуск")
     print("=" * 65)
 
     try:
